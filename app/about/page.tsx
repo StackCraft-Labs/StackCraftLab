@@ -1,18 +1,18 @@
 'use client';
 
-import Header from "../components/Header";
-import AboutHero from "../components/AboutHero";
-import AboutStory from "../components/AboutStory";
-import AboutWhyChooseUs from "../components/AboutWhyChooseUs";
-import AboutTeam from "../components/AboutTeam";
-import AboutTimeline from "../components/AboutTimeline";
-import AboutCTA from "../components/AboutCTA";
-import Footer from "../components/Footer";
+import Header from "@/app/components/Header";
+import AboutHero from "@/app/components/AboutHero";
+import AboutStory from "@/app/components/AboutStory";
+import AboutWhyChooseUs from "@/app/components/AboutWhyChooseUs";
+import AboutTeam from "@/app/components/AboutTeam";
+import AboutTimeline from "@/app/components/AboutTimeline";
+import AboutCTA from "@/app/components/AboutCTA";
+import Footer from "@/app/components/Footer";
 import { motion } from 'framer-motion';
 
 export default function AboutPage() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
