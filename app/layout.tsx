@@ -27,11 +27,11 @@ export default function RootLayout({
       >
         <CalProvider />
         {children}
+        {/* ── Google Analytics — only loads in production ── */}
+        {process.env.NODE_ENV === 'production' && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+        )}
       </body>
-      {/* ── Google Analytics — only loads in production ── */}
-      {process.env.NODE_ENV === 'production' && (
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
-      )}
     </html>
   );
 }
