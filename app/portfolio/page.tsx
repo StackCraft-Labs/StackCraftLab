@@ -2,7 +2,6 @@
 
 import Header from "../components/Header";
 import PortfolioHero from "../components/PortfolioHero";
-import PortfolioStats from "../components/PortfolioStats";
 import PortfolioProjects from "../components/PortfolioProjects";
 import PortfolioCTA from "../components/PortfolioCTA";
 import Footer from "../components/Footer";
@@ -10,7 +9,7 @@ import { motion } from 'framer-motion';
 
 export default function PortfolioPage() {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
