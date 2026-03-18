@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 import CalProvider from "./components/CalProvider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -27,6 +28,10 @@ export default function RootLayout({
         <CalProvider />
         {children}
       </body>
+      {/* ── Google Analytics — only loads in production ── */}
+      {process.env.NODE_ENV === 'production' && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+      )}
     </html>
   );
 }

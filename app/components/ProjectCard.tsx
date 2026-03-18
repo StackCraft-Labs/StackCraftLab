@@ -27,7 +27,7 @@ export default function ProjectCard({ image, title, description, tags, link, isC
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-700"
         />
-        
+
         {/* Hover Overlay */}
         <div className={`absolute inset-0 transition-opacity duration-300 ${isComingSoon ? 'bg-[#0a0a0a]/80 opacity-0 group-hover:opacity-100 flex items-center justify-center' : 'bg-gradient-to-t from-[#0a0a0a]/60 to-transparent opacity-0 group-hover:opacity-100'}`}>
           {isComingSoon && (
@@ -45,20 +45,20 @@ export default function ProjectCard({ image, title, description, tags, link, isC
       <div className="p-8 space-y-4">
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <span 
-              key={tag} 
+            <span
+              key={tag}
               className="px-3 py-1 bg-[#f7f7f7] text-[#0a0a0a] text-xs font-bold rounded-full border border-[#e2e2e2] group-hover:bg-[#f97316]/10 group-hover:text-[#f97316] group-hover:border-[#f97316]/20 transition-colors"
             >
               {tag}
             </span>
           ))}
         </div>
-        
+
         <h3 className="text-2xl font-bold text-[#0a0a0a] group-hover:text-[#f97316] transition-colors">{title}</h3>
         <p className="text-[#6b6b6b] leading-relaxed text-sm font-normal">
           {description}
         </p>
-        
+
         <div className="pt-4">
           <div className={`text-sm font-bold flex items-center gap-2 group-hover:gap-4 transition-all duration-300 ${isComingSoon ? 'text-[#6b6b6b]' : 'text-[#0a0a0a]'}`}>
             {isComingSoon ? 'Work In Progress' : (link ? 'Visit Website' : 'View Project')}

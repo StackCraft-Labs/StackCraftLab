@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectCard from './ProjectCard';
+import { trackEvent } from '@/lib/analytics';
 
 const PROJECTS = [
   {
@@ -22,8 +23,27 @@ const PROJECTS = [
 ];
 
 export default function Portfolio() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const tracked = useRef(false);
+
+  // ── Track when homepage portfolio section is seen 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'portfolio_homepage',
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
   return (
-    <section className="w-full bg-white py-24 px-6 md:px-12 relative overflow-hidden">
+    <section ref={sectionRef} className="w-full bg-white py-24 px-6 md:px-12 relative overflow-hidden">
       {/* Continuity Bridge - Vertical Connector */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-24 bg-gradient-to-b from-[#0a0a0a]/20 to-transparent z-10" />
 
@@ -55,6 +75,15 @@ export default function Portfolio() {
                 exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
+                onClick={() => {
+                  if (!project.isComingSoon) {
+                    trackEvent('portfolio_item_click', {
+                      project_name: project.title,
+                      position: index + 1,
+                      source: 'homepage',
+                    });
+                  }
+                }}
               >
                 <ProjectCard {...project} />
               </motion.div>

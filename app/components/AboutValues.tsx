@@ -1,4 +1,30 @@
+'use client';
+
+import { useEffect, useRef } from "react";
+import { trackEvent } from "@/lib/analytics";
+
 export default function AboutValues() {
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const tracked = useRef(false);
+
+  //track section view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'about_values',
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const values = [
     {
       title: 'Excellence',
@@ -27,7 +53,7 @@ export default function AboutValues() {
   ];
 
   return (
-    <section className="bg-gray-50 py-20">
+    <section ref={sectionRef} className="bg-gray-50 py-20">
       <div className="max-w-7xl mx-auto px-8">
         <div className="text-center mb-16">
           <h2 className="text-5xl font-bold text-gray-900 mb-6">

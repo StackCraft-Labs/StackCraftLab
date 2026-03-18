@@ -1,3 +1,7 @@
+'use client';
+
+import { trackEvent } from "@/lib/analytics";
+
 interface ContactCardProps {
   icon: React.ReactNode;
   title: string;
@@ -7,7 +11,12 @@ interface ContactCardProps {
 
 export default function ContactCard({ icon, title, description, content }: ContactCardProps) {
   return (
-    <div className="bg-white p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+    <div className="bg-white p-8 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+      onClick={() => trackEvent('contact_info_click', {
+        info_type: title,
+        content: content,
+      })}
+    >
       <div className="w-10 h-10 text-gray-800 mb-6">
         {icon}
       </div>

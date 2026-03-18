@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import ContactForm from './ContactForm';
+import { useEffect, useRef } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── Info items inside the hero banner ───────────────────────────────────────
 const INFO = [
@@ -17,7 +19,7 @@ const INFO = [
   },
   {
     label: 'Our Email Address',
-    lines: ['hello@stackcraftlab.com', 'support@stackcraftlab.com'],
+    lines: ['hello@stackcraftlab.com', ''],
     icon: (
       <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -42,6 +44,38 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function Contact() {
+
+  const pageTracked = useRef(false);
+  const infoTracked = useRef(false);
+  const infoRef = useRef<HTMLElement>(null);
+
+  //track /contact page visit
+  useEffect(() => {
+    if (!pageTracked.current) {
+      pageTracked.current = true;
+      trackEvent('page_view_contact', {
+        page: '/contact'
+      });
+    }
+  }, []);
+
+  // track when info cards section is seen
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !infoTracked.current) {
+          infoTracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'contact_info_cards',
+          });
+        }
+      },
+      { threshold: 0.4 }
+    );
+    if (infoRef.current) observer.observe(infoRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="bg-[#e8e8e8] min-h-screen font-sans">
       {/* ═══════════════════════════════════════════════════════════════════
@@ -54,7 +88,7 @@ export default function Contact() {
         >
           {/* Decorative glow blobs */}
           <div className="absolute top-[-40px] left-[-40px] w-[280px] sm:w-[380px] h-[280px] sm:h-[380px] bg-purple-900/20 rounded-full blur-[60px] sm:blur-[90px] pointer-events-none" />
- 
+
           {/* Form Header */}
           <div className="relative z-[2] text-center mb-10 sm:mb-[60px]">
             <motion.p
@@ -70,7 +104,7 @@ export default function Contact() {
               Ready to build something <span className="text-[#f97316]">remarkable?</span>
             </motion.h1>
           </div>
- 
+
           <div className="flex flex-col xl:grid xl:grid-cols-[minmax(0,1fr)_560px] gap-12 xl:gap-20 relative z-[2] max-w-[1200px] mx-auto">
             {/* Left Copy */}
             <motion.div {...fadeUp(0.2)}>
@@ -82,7 +116,7 @@ export default function Contact() {
                   Your message goes directly to our founding team. We typically reply within a few hours —
                   no bots, no runaround, just real developers who care about your project.
                 </p>
-                
+
                 {/* Social/Trust proof mini-list */}
                 <div className="flex flex-col gap-4 sm:gap-6 items-center lg:items-center xl:items-start text-left">
                   <div className="flex gap-4">
@@ -100,7 +134,7 @@ export default function Contact() {
                 </div>
               </div>
             </motion.div>
- 
+
             {/* Form Container */}
             <motion.div {...fadeUp(0.3)}>
               <div className="bg-white/3 backdrop-blur-[20px] rounded-[24px] border border-white/10 p-0 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
@@ -110,9 +144,9 @@ export default function Contact() {
           </div>
         </motion.div>
       </section>
- 
+
       {/* ─── INFO CARDS ─── */}
-      <section className="px-6 py-12 sm:px-12 md:px-16 lg:px-24 xl:p-[40px_180px_140px] bg-[#e8e8e8]">
+      <section ref={infoRef} className="px-6 py-12 sm:px-12 md:px-16 lg:px-24 xl:p-[40px_180px_140px] bg-[#e8e8e8]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {INFO.map((item, i) => (
             <motion.div
@@ -121,6 +155,9 @@ export default function Contact() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
+              onClick={() => trackEvent('contact_info_click', {
+                info_type: item.label,
+              })}
               className="flex items-start gap-4 bg-white border border-[#d4d4d4] rounded-[16px] p-6 sm:p-7 text-left shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)]"
             >
               <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-[12px] bg-[#111116] flex items-center justify-center flex-shrink-0 text-white">

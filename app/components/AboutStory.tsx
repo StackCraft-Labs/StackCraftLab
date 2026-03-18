@@ -1,12 +1,36 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 export default function AboutStory() {
+
+  const sectionRef = useRef(null);
+  const tracked = useRef(false);
+
+  //track when story section is read
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'about_story',
+          });
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="w-full bg-white py-24 px-6 md:px-12">
+    <section ref={sectionRef} className="w-full bg-white py-24 px-6 md:px-12">
       <div className="max-w-[1000px] mx-auto">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -29,7 +53,7 @@ export default function AboutStory() {
                 StackCraft Labs started two months ago. But the frustration behind it has been building for years. The three of us spent years in software — as freelancers, as developers inside companies, watching the same problems repeat.
               </p>
               <p>
-                Founders getting burned by slow agencies. Projects delivered late. Code that couldn&apos;t scale past the first 100 users. Developers who disappeared after launch. 
+                Founders getting burned by slow agencies. Projects delivered late. Code that couldn&apos;t scale past the first 100 users. Developers who disappeared after launch.
               </p>
               <p>
                 We built this agency because we got tired of watching that happen and knowing we could do it better. So we stopped watching and started building.

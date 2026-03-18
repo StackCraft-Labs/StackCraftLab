@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { trackEvent } from '@/lib/analytics';
 import Image from 'next/image';
 
 const team = [
@@ -8,13 +10,13 @@ const team = [
     name: 'Akash Narkar',
     role: 'Lead Developer & Co‑founder',
     bio: 'Tech visionary focused on scalable cloud architecture and complex full-stack systems that don’t break under pressure.',
-    image: '/vikrant.png',
+    image: '/akash.png',
   },
   {
     name: 'Omkar Potphode',
     role: 'Lead Developer & Co‑founder',
     bio: 'Front-end expert obsessed with pixel-perfect UI and high-performance animations. If it looks wrong on any screen, he fixes it.',
-    image: '/partner.png',
+    image: '/omkar.png',
   },
   {
     name: 'Harsh Pandere',
@@ -40,8 +42,29 @@ const itemVariants = {
 };
 
 export default function AboutTeam() {
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const tracked = useRef(false);
+
+  //track section view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'about_team',
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="w-full bg-[#f7f7f7] py-24 px-6 md:px-12 font-sans">
+    <section ref={sectionRef} className="w-full bg-[#f7f7f7] py-24 px-6 md:px-12 font-sans">
       <div className="max-w-[1400px] mx-auto text-center space-y-12 sm:space-y-16">
         {/* Header */}
         <div className="space-y-4">
@@ -62,6 +85,10 @@ export default function AboutTeam() {
               key={member.name}
               variants={itemVariants}
               whileHover={{ y: -10 }}
+              onHoverStart={() => trackEvent('team_member_hover', {
+                member_name: member.name,
+                member_role: member.role,
+              })}
               className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-[#d4d4d4] group"
             >
               <div className="flex flex-col items-center text-center space-y-6">

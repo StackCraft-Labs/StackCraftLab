@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProjectCard from './ProjectCard';
+import { trackEvent } from '@/lib/analytics';
 
 const PROJECTS = [
   {
@@ -25,9 +25,9 @@ export default function PortfolioProjects() {
   return (
     <section className="w-full bg-[#f7f7f7] pt-20 pb-32 px-6 md:px-12">
       <div className="max-w-7xl mx-auto space-y-16">
-        
+
         {/* Grid */}
-        <motion.div 
+        <motion.div
           layout
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
@@ -41,6 +41,15 @@ export default function PortfolioProjects() {
                 exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
+                onClick={() => {
+                  if (!project.isComingSoon) {
+                    trackEvent('portfolio_item_click', {
+                      project_name: project.title,
+                      position: index + 1,
+                      source: 'portfolio_page',
+                    });
+                  }
+                }}
               >
                 <ProjectCard {...project} />
               </motion.div>

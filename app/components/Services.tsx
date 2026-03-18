@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
 const WebDevIcon = () => (
@@ -68,10 +69,30 @@ const SERVICES = [
 ];
 
 export default function Services() {
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const tracked = useRef(false);
+
+  // Track when section enters viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', { section: 'services' });
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
       id="services"
       className="w-full min-h-screen bg-[#f7f7f7] flex flex-col items-center py-[160px] px-10 relative overflow-hidden [background-image:radial-gradient(circle,#c8c8c8_1px,transparent_1px)] [background-size:24px_24px] font-sans"
+      ref={sectionRef}
     >
       {/* Heading */}
       <div className="text-center mb-12 sm:mb-[72px] px-6 max-w-[720px]">

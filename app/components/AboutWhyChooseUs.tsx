@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 const reasons = [
   {
@@ -78,9 +80,67 @@ const cardVariants = {
   show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as any } },
 };
 
-export default function AboutWhyChooseUs() {
+interface AdvantageCardProps {
+  reason: {
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+  };
+}
+
+function AdvantageCard({ reason }: AdvantageCardProps) {
+  const hoverTracked = useRef(false);
   return (
-    <section className="w-full bg-white py-24 px-6 md:px-12 font-sans">
+    <motion.div
+      variants={cardVariants}
+      whileHover={{ scale: 1.03, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+      onHoverStart={() => {
+        if (!hoverTracked.current) {
+          hoverTracked.current = true;
+          trackEvent('advantage_card_hover', {
+            card_title: reason.title,
+          })
+        }
+      }}
+      className="bg-[#f7f7f7] p-10 rounded-xl border border-[#d2d2d2] flex flex-col items-start space-y-6 transition-all duration-300 group"
+    >
+      <div className="w-12 h-12 rounded-lg bg-[#0a0a0a] text-white flex items-center justify-center group-hover:bg-[#f97316] transition-colors">
+        {reason.icon}
+      </div>
+      <div className="space-y-3">
+        <h4 className="text-xl font-bold text-[#0a0a0a]">{reason.title}</h4>
+        <p className="text-[#6b6b6b] leading-relaxed text-base font-normal">
+          {reason.description}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function AboutWhyChooseUs() {
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const tracked = useRef(false);
+
+  //track section view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !tracked.current) {
+          tracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'about_advantage',
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="w-full bg-white py-24 px-6 md:px-12 font-sans">
       <div className="max-w-[1400px] mx-auto space-y-12 sm:space-y-20">
         {/* Header */}
         <div className="max-w-[800px] space-y-4">
@@ -89,7 +149,7 @@ export default function AboutWhyChooseUs() {
         </div>
 
         {/* Reasons Grid */}
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
@@ -97,22 +157,7 @@ export default function AboutWhyChooseUs() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {reasons.map((reason) => (
-            <motion.div 
-              key={reason.title}
-              variants={cardVariants}
-              whileHover={{ scale: 1.03, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
-              className="bg-[#f7f7f7] p-10 rounded-xl border border-[#d2d2d2] flex flex-col items-start space-y-6 transition-all duration-300 group"
-            >
-              <div className="w-12 h-12 rounded-lg bg-[#0a0a0a] text-white flex items-center justify-center group-hover:bg-[#f97316] transition-colors">
-                {reason.icon}
-              </div>
-              <div className="space-y-3">
-                <h4 className="text-xl font-bold text-[#0a0a0a]">{reason.title}</h4>
-                <p className="text-[#6b6b6b] leading-relaxed text-base font-normal">
-                  {reason.description}
-                </p>
-              </div>
-            </motion.div>
+            <AdvantageCard key={reason.title} reason={reason} />
           ))}
         </motion.div>
       </div>

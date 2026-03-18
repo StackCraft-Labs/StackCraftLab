@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── Nav items ───────────────────────────────────────────────────────────────
 const NAV_LINKS = [
@@ -100,9 +101,8 @@ export default function Header() {
             <a
               key={label}
               href={href}
-              className={`relative text-[15px] font-sans tracking-[-0.01em] no-underline pb-1.5 transition-colors duration-200 ${
-                active === label ? 'text-[#111] font-semibold' : 'text-[#555] font-normal'
-              }`}
+              className={`relative text-[15px] font-sans tracking-[-0.01em] no-underline pb-1.5 transition-colors duration-200 ${active === label ? 'text-[#111] font-semibold' : 'text-[#555] font-normal'
+                }`}
             >
               {label}
               {active === label && <ActiveDot />}
@@ -114,6 +114,10 @@ export default function Header() {
             data-cal-link="stackcraft-lab/30min"
             data-cal-config='{"layout":"month_view"}'
             className="inline-flex items-center justify-center px-6 py-2.5 ml-2 rounded-full bg-[#111] text-white font-semibold text-[15px] font-sans no-underline transition-transform duration-200 hover:scale-105 cursor-pointer"
+            onClick={() => trackEvent('cta_click', {
+              button: 'book_call',
+              location: 'navbar_desktop',
+            })}
           >
             Book a call
           </button>
@@ -126,6 +130,10 @@ export default function Header() {
             data-cal-link="stackcraft-lab/30min"
             data-cal-config='{"layout":"month_view"}'
             className="inline-flex items-center justify-center px-4 py-2 rounded-full bg-[#111] text-white font-semibold text-sm font-sans no-underline cursor-pointer"
+            onClick={() => trackEvent('cta_click', {
+              button: 'book_call',
+              location: 'navbar_mobile',
+            })}
           >
             Book a call
           </button>
@@ -142,9 +150,8 @@ export default function Header() {
       >
         {/* ── Logo pill ────────────────────────────────────────── */}
         <motion.div
-          className={`flex items-center bg-[#0e0e0e]/94 backdrop-blur-[22px] border border-white/9 rounded-full p-[7px_12px] shadow-[0_8px_32px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] ${
-            scrolled ? 'pointer-events-auto mr-1' : 'pointer-events-none'
-          }`}
+          className={`flex items-center bg-[#0e0e0e]/94 backdrop-blur-[22px] border border-white/9 rounded-full p-[7px_12px] shadow-[0_8px_32px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] ${scrolled ? 'pointer-events-auto mr-1' : 'pointer-events-none'
+            }`}
           animate={{
             x: scrolled ? 0 : -320,
             opacity: scrolled ? 1 : 0,
@@ -158,9 +165,8 @@ export default function Header() {
 
         {/* ── Links pill ───────────────────────────────────────── */}
         <motion.div
-          className={`flex items-center gap-0.5 bg-[#0e0e0e]/94 backdrop-blur-[22px] border border-white/9 rounded-full p-[6px_8px] shadow-[0_8px_32px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] ${
-            scrolled ? 'pointer-events-auto' : 'pointer-events-none'
-          }`}
+          className={`flex items-center gap-0.5 bg-[#0e0e0e]/94 backdrop-blur-[22px] border border-white/9 rounded-full p-[6px_8px] shadow-[0_8px_32px_rgba(0,0,0,0.32),inset_0_1px_0_rgba(255,255,255,0.06)] ${scrolled ? 'pointer-events-auto' : 'pointer-events-none'
+            }`}
           animate={{
             x: scrolled ? 0 : 320,
             opacity: scrolled ? 1 : 0,
@@ -172,9 +178,8 @@ export default function Header() {
               <a
                 key={label}
                 href={href}
-                className={`relative inline-flex items-center justify-center px-2.5 sm:px-3.5 py-1.25 rounded-full text-xs sm:text-sm font-sans whitespace-nowrap transition-colors duration-200 no-underline z-[1] ${
-                  active === label ? 'text-white font-medium' : 'text-white/48 font-normal'
-                }`}
+                className={`relative inline-flex items-center justify-center px-2.5 sm:px-3.5 py-1.25 rounded-full text-xs sm:text-sm font-sans whitespace-nowrap transition-colors duration-200 no-underline z-[1] ${active === label ? 'text-white font-medium' : 'text-white/48 font-normal'
+                  }`}
               >
                 {active === label && <PillActiveIndicator />}
                 <span className="relative z-[1]">{label}</span>
@@ -186,9 +191,12 @@ export default function Header() {
             data-cal-namespace="30min"
             data-cal-link="stackcraft-lab/30min"
             data-cal-config='{"layout":"month_view"}'
-            className={`hidden sm:inline-flex items-center justify-center px-4 py-1.5 ml-1 rounded-full bg-white text-[#111] font-semibold text-sm font-sans no-underline transition-transform duration-200 hover:scale-105 cursor-pointer ${
-              scrolled ? 'pointer-events-auto' : 'pointer-events-none'
-            }`}
+            className={`hidden sm:inline-flex items-center justify-center px-4 py-1.5 ml-1 rounded-full bg-white text-[#111] font-semibold text-sm font-sans no-underline transition-transform duration-200 hover:scale-105 cursor-pointer ${scrolled ? 'pointer-events-auto' : 'pointer-events-none'
+              }`}
+            onClick={() => trackEvent('cta_click', {
+              button: 'book_call',
+              location: 'navbar_island',
+            })}
           >
             Book a call
           </button>

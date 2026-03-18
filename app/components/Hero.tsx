@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useAnimate } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FlipLink — staggered letter wave on hover (Framer-style)
@@ -162,6 +163,10 @@ export default function Hero() {
                 className="inline-flex items-stretch rounded-[10px] overflow-hidden border border-white/13 shadow-[0_4px_24px_rgba(0,0,0,0.55)] w-full sm:w-auto cursor-pointer"
                 whileHover="hovered"
                 initial="idle"
+                onClick={() => trackEvent('cta_click', {
+                  button: 'book_call',
+                  location: 'hero_primary',
+                })}
               >
                 <div
                   className="flex flex-1 items-center justify-center sm:justify-start text-white text-[15px] font-medium tracking-[-0.01em] border-r border-white/10 no-underline p-[14px_22px] bg-[#232323]"
@@ -183,6 +188,10 @@ export default function Hero() {
               <a
                 href="/portfolio"
                 className="flex items-center justify-center sm:justify-start gap-2 text-[#9ca3af] hover:text-white transition-colors duration-300 font-medium text-base no-underline"
+                onClick={() => trackEvent('cta_click', {
+                  button: 'view_work',
+                  location: 'hero_secondary',
+                })}
               >
                 View Our Work
                 <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2.2} viewBox="0 0 24 24">

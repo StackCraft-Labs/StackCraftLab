@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { submitContact } from '../actions/contact';
+import { trackEvent } from '@/lib/analytics';
 
 type FormState = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -23,15 +24,31 @@ export default function ContactForm() {
     setState('sending');
     setErrorMessage('');
 
+    // Event 1 : user clicked send (attempted submit)
+    trackEvent('form_submit_attempt', {
+      form_type: 'contact',
+    });
+
     const formData = new FormData(e.target as HTMLFormElement);
     const result = await submitContact(formData);
 
     if (result.error) {
       setErrorMessage(result.error);
       setState('error');
+
+      // Event 2 : submission failed
+      trackEvent('form_error', {
+        form_type: 'contact',
+        error: result.error,
+      });
     } else if (result.success) {
       setState('sent');
       setForm({ name: '', email: '', message: '' });
+
+      //Event 3 : submission succeeded - this is your money event
+      trackEvent('form_submit', {
+        form_type: 'contact',
+      });
     }
   };
 
@@ -76,6 +93,10 @@ export default function ContactForm() {
               placeholder="e.g. John Doe"
               required
               className="w-full px-4 py-[13px] text-sm text-[#111] bg-[#f9f9f9] border-[1.5px] border-[#e5e7eb] rounded-[10px] outline-none transition-all duration-200 focus:border-purple-600 focus:ring-4 focus:ring-purple-600/12 focus:bg-white placeholder:text-[#9ca3af]"
+              onFocus={() => trackEvent('form_start', {
+                form_type: 'contact',
+                field: 'name',
+              })}
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -115,9 +136,8 @@ export default function ContactForm() {
             disabled={state === 'sending'}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
-            className={`inline-flex items-center gap-2.5 px-7 py-[13px] rounded-[10px] font-semibold text-[15px] tracking-[-0.01em] transition-colors duration-220 text-white ${
-              state === 'sending' ? 'bg-[#f97316] cursor-wait' : 'bg-[#f97316] hover:bg-[#ea6c0a] cursor-pointer'
-            }`}
+            className={`inline-flex items-center gap-2.5 px-7 py-[13px] rounded-[10px] font-semibold text-[15px] tracking-[-0.01em] transition-colors duration-220 text-white ${state === 'sending' ? 'bg-[#f97316] cursor-wait' : 'bg-[#f97316] hover:bg-[#ea6c0a] cursor-pointer'
+              }`}
           >
             {state === 'sending' ? (
               <>
@@ -135,7 +155,7 @@ export default function ContactForm() {
               </>
             )}
           </motion.button>
-          
+
           {state === 'error' && (
             <p className="text-red-500 text-sm font-medium text-center max-w-[400px]">
               {errorMessage}

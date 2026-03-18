@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { Github, Instagram, Twitter } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
@@ -16,9 +17,9 @@ const NAV_LINKS = [
 ];
 
 const SOCIAL_LINKS = [
-  { 
-    name: 'Instagram', 
-    href: 'https://www.instagram.com/stackcraftlabs/', 
+  {
+    name: 'Instagram',
+    href: 'https://www.instagram.com/stackcraftlabs/',
     icon: <Instagram size={18} />
   },
   {
@@ -93,6 +94,10 @@ export default function Footer() {
               className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-[#9ca3af] bg-white/5 hover:bg-[#f97316] hover:text-white hover:border-[#f97316] transition-all duration-300"
               whileHover={{ y: -4, scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => trackEvent('social_click', {
+                platform: social.name.toLowerCase(),
+                location: 'footer',
+              })}
             >
               {social.icon}
             </motion.a>

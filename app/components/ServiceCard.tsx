@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics';
 
 interface ServiceCardProps {
   icon: ReactNode;
@@ -12,17 +13,18 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ icon, title, description, eg }: ServiceCardProps) {
   const [hovered, setHovered] = useState(false);
+  const hoverTracked = useRef(false);
 
   return (
     <>
       {/* Mobile / Tablet Static Card (Directly showing description and examples) */}
       <div className="xl:hidden relative w-full rounded-[12px] border border-[#e0e0e0] bg-white p-8 flex flex-col gap-5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] font-sans mb-4">
         <div className="absolute left-0 top-0 w-[4px] h-full bg-[#f97316] z-[3] rounded-l-[3px]" />
-        
+
         <div className="flex items-center text-[#f97316]">
           {icon}
         </div>
-        
+
         <div className="flex flex-col">
           <h3 className="text-[1.25rem] font-bold text-[#0a0a0a] tracking-tight leading-tight mb-3 font-sans m-0">
             {title}
@@ -38,7 +40,16 @@ export default function ServiceCard({ icon, title, description, eg }: ServiceCar
 
       {/* Desktop Animated Card */}
       <motion.div
-        onHoverStart={() => setHovered(true)}
+        onHoverStart={() => {
+          setHovered(true);
+          // track first hover only
+          if (!hoverTracked.current) {
+            hoverTracked.current = true;
+            trackEvent('service_card_hover', {
+              service_name: title,
+            })
+          }
+        }}
         onHoverEnd={() => setHovered(false)}
         className="hidden xl:block relative w-full h-[340px] rounded-[12px] border border-[#e0e0e0] bg-white cursor-pointer overflow-hidden transition-all duration-500 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] group font-sans"
       >
@@ -53,7 +64,7 @@ export default function ServiceCard({ icon, title, description, eg }: ServiceCar
         {/* Icon and Arrow Zone */}
         <div className="absolute top-8 left-8 flex items-center gap-4 z-[2]">
           <motion.div
-            animate={{ 
+            animate={{
               scale: hovered ? 1.15 : 1,
               rotate: hovered ? 8 : 0
             }}
@@ -103,7 +114,7 @@ export default function ServiceCard({ icon, title, description, eg }: ServiceCar
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ 
+                transition={{
                   height: { duration: 0.4, ease: [0.4, 0, 0.2, 1] },
                   opacity: { duration: 0.3, delay: 0.15 }
                 }}

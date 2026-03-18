@@ -1,7 +1,8 @@
 'use client';
 
 import { motion, useScroll, useSpring } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 const milestones = [
   {
@@ -23,6 +24,8 @@ const milestones = [
 
 export default function AboutTimeline() {
   const containerRef = useRef(null);
+  const sectionTracked = useRef(false);
+  const scrollTracked = useRef(false);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start center", "end center"]
@@ -33,6 +36,36 @@ export default function AboutTimeline() {
     damping: 30,
     restDelta: 0.001
   });
+
+  //track when timeline is viewed
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !sectionTracked.current) {
+          sectionTracked.current = true;
+          trackEvent('section_viewed', {
+            section: 'about_roadmap',
+          });
+        }
+      },
+      { threshold: 0.2 }
+    );
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // track when user scrolls through full timeline 
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on('change', (v) => {
+      if (v >= 0.9 && !scrollTracked.current) {
+        scrollTracked.current = true;
+        trackEvent('timeline_completed', {
+          section: 'about_roadmap',
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
 
   return (
     <section ref={containerRef} className="w-full bg-white py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden font-sans">
@@ -47,16 +80,16 @@ export default function AboutTimeline() {
         <div className="relative">
           {/* Main Vertical Line */}
           <div className="absolute left-[33px] md:right-[calc(50%-1px)] md:left-auto w-[2px] h-full bg-[#e2e2e2] top-0 bottom-0" />
-          
+
           {/* Animated Progress Line */}
-          <motion.div 
+          <motion.div
             style={{ scaleY, transformOrigin: 'top' }}
             className="absolute left-[33px] md:right-[calc(50%-1px)] md:left-auto w-[2px] h-full bg-[#f97316] top-0 z-10"
           />
 
           <div className="space-y-24 py-16">
             {milestones.map((milestone, index) => (
-              <motion.div 
+              <motion.div
                 key={milestone.title}
                 initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
