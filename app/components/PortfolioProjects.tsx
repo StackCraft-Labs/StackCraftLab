@@ -14,7 +14,7 @@ const PROJECTS = [
   },
   {
     image: '/portfolio/github-switch.png',
-    title: 'GitHub SSH Switch Tool',
+    title: 'Go Ahead',
     description: 'The ultimate dev-productivity tool for seamless SSH key management. Switch between multiple GitHub accounts instantly without terminal frustration.',
     tags: ['SaaS', 'VS Code extension', 'Dev tool'],
     isComingSoon: true
