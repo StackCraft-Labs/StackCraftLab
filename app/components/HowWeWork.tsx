@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, type MotionValue } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics';
 
 const STEPS = [
@@ -51,6 +51,67 @@ const STEPS = [
     ),
   },
 ];
+
+interface StepItem {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
+function DesktopStepCard({
+  step,
+  index,
+  smoothProgress,
+}: {
+  step: StepItem;
+  index: number;
+  smoothProgress: MotionValue<number>;
+}) {
+  const start = index * 0.25;
+
+  const opacity = useTransform(smoothProgress, [start, start + 0.15], [0, 1]);
+  const y = useTransform(smoothProgress, [start, start + 0.2], [50, 0]);
+  const borderScale = useTransform(smoothProgress, [start + 0.05, start + 0.25], [0, 1]);
+
+  return (
+    <motion.div
+      key={index}
+      style={{ opacity, y }}
+      className="relative p-12 min-h-[420px] flex flex-col group border-r border-white/5 last:border-r-0"
+    >
+      {index > 0 && (
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-3/4 bg-white/5 z-0" />
+      )}
+
+      <motion.div
+        style={{ scaleY: borderScale }}
+        className="absolute left-0 top-0 w-[3px] h-full bg-[#f97316] origin-top z-20"
+      />
+
+      <div className="flex flex-col h-full relative z-30">
+        <div className="mb-10 text-white/90 group-hover:text-[#f97316] transition-colors duration-500">
+          <div className="p-1 border-white/10 inline-block transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+            {step.icon}
+          </div>
+        </div>
+
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-baseline gap-3 text-left">
+          <span className="text-[#f97316] text-xl font-mono opacity-80">0{index + 1}</span>
+          <span className="tracking-tight">{step.title}</span>
+        </h3>
+
+        <p className="text-gray-400 leading-relaxed text-[11pt] font-normal group-hover:text-gray-200 transition-colors duration-500 text-left">
+          {step.description}
+        </p>
+      </div>
+
+      <motion.div
+        style={{ opacity }}
+        className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+      />
+    </motion.div>
+  );
+}
 
 export default function HowWeWork() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -177,52 +238,14 @@ export default function HowWeWork() {
 
             {/* Cards Grid */}
             <div className="grid grid-cols-4 w-full border border-white/5 bg-white/[0.01] backdrop-blur-sm overflow-hidden">
-              {STEPS.map((step, index) => {
-                const start = index * 0.25;
-
-                const opacity = useTransform(smoothProgress, [start, start + 0.15], [0, 1]);
-                const y = useTransform(smoothProgress, [start, start + 0.2], [50, 0]);
-                const borderScale = useTransform(smoothProgress, [start + 0.05, start + 0.25], [0, 1]);
-
-                return (
-                  <motion.div
-                    key={index}
-                    style={{ opacity, y }}
-                    className="relative p-12 min-h-[420px] flex flex-col group border-r border-white/5 last:border-r-0"
-                  >
-                    {index > 0 && (
-                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[1px] h-3/4 bg-white/5 z-0" />
-                    )}
-
-                    <motion.div
-                      style={{ scaleY: borderScale }}
-                      className="absolute left-0 top-0 w-[3px] h-full bg-[#f97316] origin-top z-20"
-                    />
-
-                    <div className="flex flex-col h-full relative z-30">
-                      <div className="mb-10 text-white/90 group-hover:text-[#f97316] transition-colors duration-500">
-                        <div className="p-1 border-white/10 inline-block transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                          {step.icon}
-                        </div>
-                      </div>
-
-                      <h3 className="text-2xl font-bold text-white mb-6 flex items-baseline gap-3 text-left">
-                        <span className="text-[#f97316] text-xl font-mono opacity-80">0{index + 1}</span>
-                        <span className="tracking-tight">{step.title}</span>
-                      </h3>
-
-                      <p className="text-gray-400 leading-relaxed text-[11pt] font-normal group-hover:text-gray-200 transition-colors duration-500 text-left">
-                        {step.description}
-                      </p>
-                    </div>
-
-                    <motion.div
-                      style={{ opacity }}
-                      className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                    />
-                  </motion.div>
-                );
-              })}
+              {STEPS.map((step, index) => (
+                <DesktopStepCard
+                  key={step.title}
+                  step={step}
+                  index={index}
+                  smoothProgress={smoothProgress}
+                />
+              ))}
             </div>
           </div>
 

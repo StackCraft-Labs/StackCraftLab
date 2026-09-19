@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics';
 
@@ -18,7 +17,7 @@ const staggerContainer = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 export default function AboutHero() {

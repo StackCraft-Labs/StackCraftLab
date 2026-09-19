@@ -68,7 +68,7 @@ export default function ContactForm() {
           Message sent!
         </h3>
         <p className="text-[#6b7280] text-sm sm:text-[0.95rem] leading-[1.6]">
-          We'll get back to you within 24 hours.
+          We&apos;ll get back to you within 24 hours.
         </p>
       </motion.div>
     );

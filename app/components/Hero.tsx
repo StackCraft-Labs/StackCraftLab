@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useAnimate } from 'framer-motion';
+import Image from 'next/image';
 import { trackEvent } from '@/lib/analytics';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -115,9 +116,11 @@ function DraggableShape({
         }}
         className="w-full h-full cursor-grab pointer-events-auto [filter:drop-shadow(0_20px_40px_rgba(0,0,0,0.6))] touch-none select-none will-change-transform"
       >
-        <img
+        <Image
           src={src}
           alt={alt}
+          width={size}
+          height={size}
           draggable={false}
           className="w-full h-full object-contain block"
         />

@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { trackEvent } from '@/lib/analytics';
 
@@ -38,7 +37,7 @@ export default function PortfolioCTA() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
           className="space-y-4 sm:space-y-6"
         >
           <h2 className="text-3xl sm:text-5xl md:text-7xl font-black text-[#0a0a0a] leading-tight tracking-tight px-4">

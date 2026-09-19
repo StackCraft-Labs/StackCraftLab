@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { trackEvent } from '@/lib/analytics';
-import { button } from 'framer-motion/client';
 
 export default function AboutCTA() {
   const sectionRef = useRef<HTMLElement>(null);

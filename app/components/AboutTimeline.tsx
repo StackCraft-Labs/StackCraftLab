@@ -94,7 +94,7 @@ export default function AboutTimeline() {
                 initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                 className={`relative flex flex-col md:flex-row items-start ${index % 2 === 0 ? 'md:flex-row-reverse' : 'md:flex-row'} md:items-center`}
               >
                 {/* Milestone Node */}

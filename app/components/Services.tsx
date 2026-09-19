@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import ServiceCard from './ServiceCard';
 import { trackEvent } from '@/lib/analytics';
 

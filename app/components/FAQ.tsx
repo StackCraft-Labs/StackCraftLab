@@ -1,7 +1,6 @@
 'use client';
 
 import FAQItem from './FAQItem';
-import { motion } from 'framer-motion';
 
 export default function FAQ() {
   const faqs = [

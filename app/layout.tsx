@@ -3,6 +3,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import CalProvider from "./components/CalProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SITE_URL } from "@/lib/site";
 
 const lato = Lato({
   variable: "--font-lato",
@@ -11,8 +12,12 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "StackCraft Lab - Software for Ambitious Businesses",
   description: "We engineer, design, and scale powerful software solutions for startups, SaaS, and enterprises",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({

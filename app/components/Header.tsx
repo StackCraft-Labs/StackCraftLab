@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link';
 import { trackEvent } from '@/lib/analytics';
 
 // ─── Nav items ───────────────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ export default function Header() {
         {/* Desktop Nav links */}
         <nav className="hidden lg:flex items-center gap-9">
           {NAV_LINKS.map(({ label, href }) => (
-            <a
+            <Link
               key={label}
               href={href}
               className={`relative text-[15px] font-sans tracking-[-0.01em] no-underline pb-1.5 transition-colors duration-200 ${active === label ? 'text-[#111] font-semibold' : 'text-[#555] font-normal'
@@ -106,7 +107,7 @@ export default function Header() {
             >
               {label}
               {active === label && <ActiveDot />}
-            </a>
+            </Link>
           ))}
 
           <button
@@ -158,9 +159,9 @@ export default function Header() {
           }}
           transition={{ ...SPRING, delay: scrolled ? 0 : 0 }}
         >
-          <a href="/" className="flex no-underline">
+          <Link href="/" className="flex no-underline">
             <LogoMark dark={false} size={28} />
-          </a>
+          </Link>
         </motion.div>
 
         {/* ── Links pill ───────────────────────────────────────── */}
@@ -175,7 +176,7 @@ export default function Header() {
         >
           <AnimatePresence>
             {NAV_LINKS.map(({ label, href }) => (
-              <a
+              <Link
                 key={label}
                 href={href}
                 className={`relative inline-flex items-center justify-center px-2.5 sm:px-3.5 py-1.25 rounded-full text-xs sm:text-sm font-sans whitespace-nowrap transition-colors duration-200 no-underline z-[1] ${active === label ? 'text-white font-medium' : 'text-white/48 font-normal'
@@ -183,7 +184,7 @@ export default function Header() {
               >
                 {active === label && <PillActiveIndicator />}
                 <span className="relative z-[1]">{label}</span>
-              </a>
+              </Link>
             ))}
           </AnimatePresence>
 

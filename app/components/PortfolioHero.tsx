@@ -18,7 +18,7 @@ export default function PortfolioHero() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
         >
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold text-[#0a0a0a] tracking-tight mb-4 sm:mb-8">
             Our <span className="text-[#f97316]">Work</span>
@@ -28,7 +28,7 @@ export default function PortfolioHero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] as any }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
           className="text-lg md:text-xl text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed font-normal"
         >
           One project in. Here&apos;s exactly what we built, how we built it, and what the client got. Quality over quantity — every time.
